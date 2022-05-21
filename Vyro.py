@@ -102,8 +102,11 @@ class Matrix:
     def isSingleNum(self):
         return self.isSquare() and self.shape()[0] == 1
 
-    def isVector(self):
+    def isColumnVector(self):
         return self.shape()[1] == 1
+
+    def isRowVector(self):
+        return self.shape()[0] == 1
 
     def isSymmetric(self):
         return self == self.transpose()
@@ -200,7 +203,10 @@ class Matrix:
                                  for i in range(self.shape()[0])])
 
 
-def Vector(arr):
+def rowVector(arr):
+    return Matrix([_Row(arr)])
+
+def columnVector(arr):
     return Matrix([_Row(arr)]).transpose()
 
 def exp(matrix):
