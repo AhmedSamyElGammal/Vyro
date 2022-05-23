@@ -11,7 +11,7 @@ class _Row:
             self.__arr = arr
         self.__RowLengthError = "Length of rows must be equal"
 
-    def getarr(self):
+    def getArr(self):
         return self.__arr
     
     def __getitem__(self, key):
@@ -30,18 +30,18 @@ class _Row:
         if isinstance(other, _Row):
             if len(self) != len(other):
                 raise ValueError(self.__RowLengthError)
-            return _Row([x + y for x, y in zip(self.__arr, other.getarr())])
+            return _Row([x + y for x, y in zip(self.__arr, other.getArr())])
         else: ## if other is a number
             return _Row([x + other for x in self.__arr])
 
     def connect(self, other):
-        return _Row(self.__arr + other.getarr())
+        return _Row(self.__arr + other.getArr())
 
     def __sub__(self, other):
         if isinstance(other, _Row):
             if len(self) != len(other):
                 raise ValueError(self.__RowLengthError)
-            return _Row([x - y for x, y in zip(self.__arr, other.getarr())])
+            return _Row([x - y for x, y in zip(self.__arr, other.getArr())])
         else: ## if other is a number
             return _Row([x - other for x in self.__arr])
 
@@ -49,7 +49,7 @@ class _Row:
         if isinstance(other, _Row):
             if len(self) != len(other):
                 raise ValueError(self.__RowLengthError)
-            return _Row([y - x for x, y in zip(self.__arr, other.getarr())])
+            return _Row([y - x for x, y in zip(self.__arr, other.getArr())])
         else: ## if other is a number
             return _Row([other - x for x in self.__arr])
 
@@ -64,7 +64,7 @@ class _Row:
     def __eq__(self, other):
         if len(self) != len(other):
             return False
-        return all(x == y for x, y in zip(self.__arr, other.getarr()))
+        return all(x == y for x, y in zip(self.__arr, other.getArr()))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -78,7 +78,7 @@ class Matrix:
         else:
             self.__rows = rows
 
-    def getrows(self):
+    def getRows(self):
         return self.__rows
 
     def __getitem__(self, key):
@@ -132,8 +132,8 @@ class Matrix:
 
     def V_connect(self, other):
         if self.shape()[1] != other.shape()[1]:
-            raise ValueError("The number of colums of the two matrices must be equal")
-        return Matrix(self.__rows + other.getrows())
+            raise ValueError("The number of columns of the two matrices must be equal")
+        return Matrix(self.__rows + other.getRows())
 
     def __sub__(self, other):
         if isinstance(other, Matrix):
@@ -156,6 +156,18 @@ class Matrix:
 
     def deleteCol(self, n):
         return self.transpose().deleteRow(n).transpose()
+
+    def fixRow(self, n, newValue = 0):
+        ## replace the all numbers with the new value
+        # except the n-th row numbers
+        return Matrix([_Row([newValue] * self.shape()[1])
+                           if i != n else row
+                                for i, row in enumerate(self)])
+
+    def fixCol(self, n, newValue = 0):
+        ## replace the all numbers with the new value
+        # except the n-th column numbers
+        return self.transpose().fixRow(n, newValue).transpose()
 
     def __mul__(self, num):
         return Matrix([row * num for row in self])
